@@ -4,7 +4,6 @@
 
 Afsk modem;
 AX25Ctx AX25;
-extern void aprs_msg_callback(struct AX25Msg *msg);
 #define countof(a) sizeof(a)/sizeof(a[0])
 
 unsigned long custom_preamble = 350UL;
@@ -45,7 +44,6 @@ int message_recip_ssid = -1;
 int message_seq = 0;
 char lastMessage[67];
 size_t lastMessageLen;
-bool message_autoAck = false;
 /////////////////////////
 
 void APRS_init(void) {

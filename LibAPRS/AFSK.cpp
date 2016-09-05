@@ -40,14 +40,7 @@ void AFSK_init(Afsk *afsk) {
     // Set phase increment
     afsk->phaseInc = MARK_INC;
     // Initialise FIFO buffers
-    fifo_init(&afsk->delayFifo, (uint8_t *)afsk->delayBuf, sizeof(afsk->delayBuf));
-    fifo_init(&afsk->rxFifo, afsk->rxBuf, sizeof(afsk->rxBuf));
     fifo_init(&afsk->txFifo, afsk->txBuf, sizeof(afsk->txBuf));
-
-    // Fill delay FIFO with zeroes
-    for (int i = 0; i<SAMPLESPERBIT / 2; i++) {
-        fifo_push(&afsk->delayFifo, 0);
-    }
 
     AFSK_hw_init();
 
@@ -72,14 +65,6 @@ void afsk_putchar(char c) {
     AFSK_txStart(AFSK_modem);
     while(fifo_isfull_locked(&AFSK_modem->txFifo)) { /* Wait */ }
     fifo_push_locked(&AFSK_modem->txFifo, c);
-}
-
-int afsk_getchar(void) {
-    if (fifo_isempty_locked(&AFSK_modem->rxFifo)) {
-        return EOF;
-    } else {
-        return fifo_pop_locked(&AFSK_modem->rxFifo);
-    }
 }
 
 void AFSK_transmit(char *buffer, size_t size) {
@@ -151,8 +136,6 @@ uint8_t AFSK_dac_isr(Afsk *afsk) {
     return sinSample(afsk->phaseAcc);
 }
 
-extern void APRS_poll();
-uint8_t poll_timer = 0;
 ISR(ADC_vect) {
     TIFR1 = _BV(ICF1);
     if (hw_afsk_dac_isr) {
