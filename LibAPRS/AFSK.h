@@ -125,10 +125,6 @@ typedef struct Afsk
 #define LED_TX_ON()   do { LED_PORT |= 0xC0; } while (0)
 #define LED_TX_OFF()  do { LED_PORT &= ~0xC0; } while (0)
 
-#define LED_RX_INIT() do { } while (0)
-#define LED_RX_ON()   do { } while (0)
-#define LED_RX_OFF()  do { } while (0)
-
 void AFSK_init(Afsk *afsk);
 void AFSK_transmit(char *buffer, size_t size);
 void AFSK_poll(Afsk *afsk);

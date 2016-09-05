@@ -59,10 +59,6 @@ void APRS_init(int reference, bool open_squelch) {
     ax25_init(&AX25, aprs_msg_callback);
 }
 
-void APRS_poll(void) {
-    ax25_poll(&AX25);
-}
-
 void APRS_setCallsign(char *call, int ssid) {
     memset(CALL, 0, 7);
     int i = 0;

@@ -57,47 +57,6 @@ static void ax25_decode(AX25Ctx *ctx) {
 
 }
 
-void ax25_poll(AX25Ctx *ctx) {
-    int c;
-
-    while ((c = afsk_getchar()) != EOF) {
-        if (!ctx->escape && c == HDLC_FLAG) {
-            if (ctx->frame_len >= AX25_MIN_FRAME_LEN) {
-                if (ctx->crc_in == AX25_CRC_CORRECT) {
-                    if(LibAPRS_open_squelch) {
-                        LED_RX_ON();
-                    }
-                    ax25_decode(ctx);
-                }
-            }
-            ctx->sync = true;
-            ctx->crc_in = CRC_CCIT_INIT_VAL;
-            ctx->frame_len = 0;
-            continue;
-        }
-
-        if (!ctx->escape && c == HDLC_RESET) {
-            ctx->sync = false;
-            continue;
-        }
-
-        if (!ctx->escape && c == AX25_ESC) {
-            ctx->escape = true;
-            continue;
-        }
-
-        if (ctx->sync) {
-            if (ctx->frame_len < AX25_MAX_FRAME_LEN) {
-                ctx->buf[ctx->frame_len++] = c;
-                ctx->crc_in = update_crc_ccit(c, ctx->crc_in);
-            } else {
-                ctx->sync = false;
-            }
-        }
-        ctx->escape = false;
-    }
-}
-
 static void ax25_putchar(AX25Ctx *ctx, uint8_t c)
 {
     if (c == HDLC_FLAG || c == HDLC_RESET || c == AX25_ESC) afsk_putchar(AX25_ESC);
