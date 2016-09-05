@@ -9,7 +9,6 @@ bool hw_afsk_dac_isr = false;
 Afsk *AFSK_modem;
 
 // Forward declerations
-int afsk_getchar(void);
 void afsk_putchar(char c);
 
 void AFSK_hw_init(void) {
