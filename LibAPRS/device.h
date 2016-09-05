@@ -25,7 +25,6 @@
     #define DAC_DDR  DDRD
     #define LED_PORT PORTB
     #define LED_DDR  DDRB
-    #define LED_TX_BIT 2
     #define ADC_PORT PORTC
     #define ADC_DDR  DDRC
 #error upposi
@@ -34,7 +33,6 @@
     #define DAC_DDR  DDRB
     #define LED_PORT PORTC
     #define LED_DDR  DDRC
-    #define LED_TX_BIT 7
     #define ADC_PORT PORTF
     #define ADC_DDR  DDRF
 #endif

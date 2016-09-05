@@ -120,10 +120,10 @@ typedef struct Afsk
 // to configure the pins as output pins, and the _ON()
 // and _OFF() functions writes to the PORT registers
 // to turn the pins on or off.
-// TODO LED is also TX enable on HX1
-#define LED_TX_INIT() do { LED_DDR |= _BV(LED_TX_BIT); } while (0)
-#define LED_TX_ON()   do { LED_PORT |= _BV(LED_TX_BIT); } while (0)
-#define LED_TX_OFF()  do { LED_PORT &= ~_BV(LED_TX_BIT); } while (0)
+// On Arduino Micro, we control both LED on pin 13 (PC7) and HX1 TX enable bit PC6)
+#define LED_TX_INIT() do { LED_DDR |= 0xC0; } while (0)
+#define LED_TX_ON()   do { LED_PORT |= 0xC0; } while (0)
+#define LED_TX_OFF()  do { LED_PORT &= ~0xC0; } while (0)
 
 #define LED_RX_INIT() do { } while (0)
 #define LED_RX_ON()   do { } while (0)
