@@ -50,7 +50,7 @@ bool message_autoAck = false;
 
 void APRS_init(void) {
     AFSK_init(&modem);
-    ax25_init(&AX25, aprs_msg_callback);
+    ax25_init(&AX25);
 }
 
 void APRS_setCallsign(char *call, int ssid) {

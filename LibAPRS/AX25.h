@@ -20,15 +20,11 @@
 struct AX25Ctx;     // Forward declarations
 struct AX25Msg;
 
-typedef void (*ax25_callback_t)(struct AX25Msg *msg);
-
 typedef struct AX25Ctx {
     uint8_t buf[AX25_MAX_FRAME_LEN];
     FILE *ch;
     size_t frame_len;
-    uint16_t crc_in;
     uint16_t crc_out;
-    ax25_callback_t hook;
     bool sync;
     bool escape;
 } AX25Ctx;
@@ -63,6 +59,6 @@ void ax25_sendVia(AX25Ctx *ctx, const AX25Call *path, size_t path_len, const voi
 
 
 void ax25_sendRaw(AX25Ctx *ctx, void *_buf, size_t len);
-void ax25_init(AX25Ctx *ctx, ax25_callback_t hook);
+void ax25_init(AX25Ctx *ctx);
 
 #endif
