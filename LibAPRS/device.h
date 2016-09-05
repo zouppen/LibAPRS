@@ -25,16 +25,12 @@
     #define DAC_DDR  DDRD
     #define LED_PORT PORTB
     #define LED_DDR  DDRB
-    #define ADC_PORT PORTC
-    #define ADC_DDR  DDRC
 #error upposi
 #else if TARGET_CPU == m32u4 
     #define DAC_PORT PORTB
     #define DAC_DDR  DDRB
     #define LED_PORT PORTC
     #define LED_DDR  DDRC
-    #define ADC_PORT PORTF
-    #define ADC_DDR  DDRF
 #endif
 
 #endif

@@ -4,44 +4,21 @@
 
 extern unsigned long custom_preamble;
 extern unsigned long custom_tail;
-extern int LibAPRS_vref;
-extern bool LibAPRS_open_squelch;
 
 bool hw_afsk_dac_isr = false;
-bool hw_5v_ref = false;
 Afsk *AFSK_modem;
-
 
 // Forward declerations
 int afsk_getchar(void);
 void afsk_putchar(char c);
 
-void AFSK_hw_refDetect(void) {
-    // This is manual for now
-    if (LibAPRS_vref == REF_5V) {
-        hw_5v_ref = true;
-    } else {
-        hw_5v_ref = false;
-    }
-}
-
 void AFSK_hw_init(void) {
     // Set up ADC
-
-    AFSK_hw_refDetect();
 
     TCCR1A = 0;                                    
     TCCR1B = _BV(CS10) | _BV(WGM13) | _BV(WGM12);
     ICR1 = (((CPU_FREQ+FREQUENCY_CORRECTION)) / 9600) - 1;
 
-    if (hw_5v_ref) {
-        ADMUX = _BV(REFS0) | 0;
-    } else {
-        ADMUX = 0;
-    }
-
-    ADC_DDR  &= ~_BV(0);
-    ADC_PORT &= ~_BV(0);
     DIDR0 |= _BV(0);
     ADCSRB =    _BV(ADTS2) |
                 _BV(ADTS1) |

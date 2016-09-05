@@ -62,8 +62,6 @@ void ax25_sendVia(AX25Ctx *ctx, const AX25Call *path, size_t path_len, const voi
 #define ax25_send(ctx, dst, src, buf, len) ax25_sendVia(ctx, ({static AX25Call __path[]={dst, src}; __path;}), 2, buf, len)
 
 
-
-void ax25_poll(AX25Ctx *ctx);
 void ax25_sendRaw(AX25Ctx *ctx, void *_buf, size_t len);
 void ax25_init(AX25Ctx *ctx, ax25_callback_t hook);
 
