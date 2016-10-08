@@ -35,7 +35,7 @@ inline static uint8_t sinSample(uint16_t i) {
 #define CPU_FREQ F_CPU
 
 #define CONFIG_AFSK_TX_BUFLEN 64   
-#define SAMPLERATE 9600
+#define SAMPLERATE ((CPU_FREQ+FREQUENCY_CORRECTION) / 1024)
 #define BITRATE    1200
 #define SAMPLESPERBIT (SAMPLERATE / BITRATE)
 #define BIT_STUFF_LEN 5

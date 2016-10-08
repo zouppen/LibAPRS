@@ -16,7 +16,7 @@ void AFSK_hw_init(void) {
 
     TCCR1A = 0;                                    
     TCCR1B = _BV(CS10) | _BV(WGM13) | _BV(WGM12);
-    ICR1 = (((CPU_FREQ+FREQUENCY_CORRECTION)) / 9600) - 1;
+    ICR1 = 1024;
 
     DIDR0 |= _BV(0);
     ADCSRB =    _BV(ADTS2) |
