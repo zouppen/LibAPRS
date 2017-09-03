@@ -12,22 +12,15 @@ Afsk *AFSK_modem;
 void afsk_putchar(char c);
 
 void AFSK_hw_init(void) {
-    // Set up ADC
+/*    // Set up ADC
 
-    TCCR1A = 0;                                    
-    TCCR1B = _BV(CS10) | _BV(WGM13) | _BV(WGM12);
-    ICR1 = 1024;
-
-    DIDR0 |= _BV(0);
-    ADCSRB =    _BV(ADTS2) |
-                _BV(ADTS1) |
-                _BV(ADTS0);  
-    ADCSRA =    _BV(ADEN) |
-                _BV(ADSC) |
-                _BV(ADATE)|
-                _BV(ADIE) |
-                _BV(ADPS2);
-
+    // Use non-inverted PWM on OC1B
+    TCCR1A = _BV(COM1B1);
+    // No prescaling, 10-bit PWM
+    TCCR1B = _BV(CS10) | _BV(WGM12) | _BV(WGM11) | _BV(WGM10);
+    TIMSK1 = _BV(TOIE1);
+    TIFR1 = _BV(ICF1);
+*/    
     AFSK_DAC_INIT();
     LED_TX_INIT();
 }
@@ -134,10 +127,11 @@ uint8_t AFSK_dac_isr(Afsk *afsk) {
 
     return sinSample(afsk->phaseAcc);
 }
-
-ISR(ADC_vect) {
+/*
+ISR(TIMER1_OVF_vect) {
     TIFR1 = _BV(ICF1);
     if (hw_afsk_dac_isr) {
-        DAC_PORT = AFSK_dac_isr(AFSK_modem) & 0xF0;
+	OCR1B = (int)AFSK_dac_isr(AFSK_modem) << 2;
     }
 }
+*/
