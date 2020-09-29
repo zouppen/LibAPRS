@@ -63,6 +63,7 @@ typedef struct Afsk
     uint8_t txBuf[CONFIG_AFSK_TX_BUFLEN];   // Actial data storage for said FIFO
 
     volatile bool sending;                  // Set when modem is sending
+    int en_pin;                             // TX enable pin on HX1
 } Afsk;
 
 #define DIV_ROUND(dividend, divisor)  (((dividend) + (divisor) / 2) / (divisor))
@@ -73,19 +74,12 @@ typedef struct Afsk
 #define AFSK_DAC_IRQ_STOP()    do { extern bool hw_afsk_dac_isr; hw_afsk_dac_isr = false; } while (0)
 #define AFSK_DAC_INIT()        do { DAC_DDR |= 0xF0; } while (0)
 
-// Here's some macros for controlling the RX/TX LEDs
-// THE _INIT() functions writes to the DDRB register
-// to configure the pins as output pins, and the _ON()
-// and _OFF() functions writes to the PORT registers
-// to turn the pins on or off.
-// On Arduino Micro, we control both LED on pin 13 (PC7) and HX1 TX enable bit PC6)
-#define LED_TX_INIT() do { LED_DDR |= 0xC0; } while (0)
-#define LED_TX_ON()   do { LED_PORT |= 0xC0; } while (0)
-#define LED_TX_OFF()  do { LED_PORT &= ~0xC0; } while (0)
-
-void AFSK_init(Afsk *afsk);
+void AFSK_init(Afsk *afsk, int en_pin);
 void AFSK_transmit(char *buffer, size_t size);
 
 void afsk_putchar(char c);
+
+void tx_on();
+void tx_off();
 
 #endif

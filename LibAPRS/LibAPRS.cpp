@@ -46,8 +46,8 @@ char lastMessage[67];
 size_t lastMessageLen;
 /////////////////////////
 
-void APRS_init(void) {
-    AFSK_init(&modem);
+void APRS_init(int en_pin) {
+    AFSK_init(&modem, en_pin);
     ax25_init(&AX25);
 }
 

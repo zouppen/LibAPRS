@@ -12,20 +12,14 @@ Afsk *AFSK_modem;
 void afsk_putchar(char c);
 
 void AFSK_hw_init(void) {
-/*    // Set up ADC
-
-    // Use non-inverted PWM on OC1B
-    TCCR1A = _BV(COM1B1);
-    // No prescaling, 10-bit PWM
-    TCCR1B = _BV(CS10) | _BV(WGM12) | _BV(WGM11) | _BV(WGM10);
-    TIMSK1 = _BV(TOIE1);
-    TIFR1 = _BV(ICF1);
-*/    
     AFSK_DAC_INIT();
-    LED_TX_INIT();
+
+    // Prepare TX enable
+    tx_off();
+    pinMode(AFSK_modem->en_pin, OUTPUT);
 }
 
-void AFSK_init(Afsk *afsk) {
+void AFSK_init(Afsk *afsk, int en_pin) {
     // Allocate modem struct memory
     memset(afsk, 0, sizeof(*afsk));
     AFSK_modem = afsk;
@@ -34,6 +28,7 @@ void AFSK_init(Afsk *afsk) {
     // Initialise FIFO buffers
     fifo_init(&afsk->txFifo, afsk->txBuf, sizeof(afsk->txBuf));
 
+    afsk->en_pin = en_pin;
     AFSK_hw_init();
 
 }
@@ -44,7 +39,7 @@ static void AFSK_txStart(Afsk *afsk) {
         afsk->phaseAcc = 0;
         afsk->bitstuffCount = 0;
         afsk->sending = true;
-        LED_TX_ON();
+        tx_on();
         afsk->preambleLength = DIV_ROUND(custom_preamble * BITRATE, 8000);
         AFSK_DAC_IRQ_START();
     }
@@ -73,7 +68,7 @@ uint8_t AFSK_dac_isr(Afsk *afsk) {
             if (fifo_isempty(&afsk->txFifo) && afsk->tailLength == 0) {
                 AFSK_DAC_IRQ_STOP();
                 afsk->sending = false;
-                LED_TX_OFF();
+                tx_off();
                 return 0;
             } else {
                 if (!afsk->bitStuff) afsk->bitstuffCount = 0;
@@ -93,7 +88,7 @@ uint8_t AFSK_dac_isr(Afsk *afsk) {
                     if (fifo_isempty(&afsk->txFifo)) {
                         AFSK_DAC_IRQ_STOP();
                         afsk->sending = false;
-                        LED_TX_OFF();
+                        tx_off();
                         return 0;
                     } else {
                         afsk->currentOutputByte = fifo_pop(&afsk->txFifo);
@@ -127,11 +122,13 @@ uint8_t AFSK_dac_isr(Afsk *afsk) {
 
     return sinSample(afsk->phaseAcc);
 }
-/*
-ISR(TIMER1_OVF_vect) {
-    TIFR1 = _BV(ICF1);
-    if (hw_afsk_dac_isr) {
-	OCR1B = (int)AFSK_dac_isr(AFSK_modem) << 2;
-    }
+
+void tx_on() {
+    digitalWrite(AFSK_modem->en_pin, HIGH);
+    DDRD |= (1<<5); // This just turns on TX LED (switch to output state)
 }
-*/
+
+void tx_off() {
+    digitalWrite(AFSK_modem->en_pin, LOW);
+    DDRD &= ~(1<<5); // This just turns on TX LED (switch to input state)
+}

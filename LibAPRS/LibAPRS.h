@@ -8,7 +8,7 @@
 #include "AFSK.h"
 #include "AX25.h"
 
-void APRS_init(void);
+void APRS_init(int en_pin);
 
 void APRS_setCallsign(char *call, int ssid);
 void APRS_setDestination(char *call, int ssid);
